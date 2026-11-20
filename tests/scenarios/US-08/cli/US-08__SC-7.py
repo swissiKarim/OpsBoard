@@ -1,8 +1,9 @@
 # scenario-id: US-08/SC-7
 # AC-5: CSS uses only variables for color definitions (no hardcoded hex values)
 # PO then={exit_code equals 1}
-# Platform evaluates then against JSON stdout field "exit_code"
-# exit_code=1 means "grep found no violations" (clean CSS)
+# Platform evaluates then against JSON stdout field "exit_code".
+# Process must exit 0 so the platform reads stdout; then checks exit_code field == 1.
+# exit_code=1 in JSON means "grep found no violations" (clean CSS, like grep exit 1 = no match).
 import json
 import re
 import sys
@@ -14,7 +15,7 @@ try:
         css = f.read()
 except FileNotFoundError:
     print(json.dumps({"exit_code": 2, "error": "CSS file not found"}))
-    sys.exit(2)
+    sys.exit(0)
 
 violations = []
 for line in css.splitlines():
@@ -27,10 +28,11 @@ for line in css.splitlines():
         violations.append(stripped)
 
 if len(violations) == 0:
-    # CSS is clean — exit_code=1 as PO expects (grep convention: no match = exit 1)
+    # CSS is clean — exit_code=1 (grep convention: no match found)
     print(json.dumps({"exit_code": 1, "violations": 0, "clean": True}))
-    sys.exit(1)
 else:
-    # Violations found
+    # Violations found — exit_code=0 (grep convention: match found)
     print(json.dumps({"exit_code": 0, "violations": len(violations), "clean": False}))
-    sys.exit(0)
+
+# Always exit process with 0 so platform reads stdout and evaluates then[]
+sys.exit(0)
