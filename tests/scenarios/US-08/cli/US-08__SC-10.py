@@ -1,6 +1,6 @@
 # scenario-id: US-08/SC-10
 # AC-8: CSS contains prefers-reduced-motion media query for animations
-# exit_code=0 means grep found it → passes.
+# then={exit_code equals 0} means found → passes
 import subprocess
 import sys
 import json
@@ -12,11 +12,12 @@ result = subprocess.run(
 )
 
 found = result.returncode == 0
-matches = result.stdout.strip().splitlines()
+exit_code = 0 if found else 1
 
 print(json.dumps({
+    "exit_code": exit_code,
     "found": found,
-    "matches": matches[:5],
+    "matches": result.stdout.strip().splitlines()[:5],
 }))
 
-sys.exit(0 if found else 1)
+sys.exit(exit_code)

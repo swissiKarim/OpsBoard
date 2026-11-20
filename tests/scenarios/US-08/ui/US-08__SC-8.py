@@ -4,9 +4,11 @@ from asb_ui import page_session, screenshot
 import json
 
 with page_session() as (page, base_url):
-    page.set_viewport_size({"width": 480, "height": 800})
+    # Use 479px to safely trigger max-width:480px media query
+    page.set_viewport_size({"width": 479, "height": 800})
     page.goto(base_url.rstrip("/") + "/incidents")
     page.wait_for_load_state("networkidle")
+    page.wait_for_timeout(300)
 
     incident_card_mobile_visible = page.is_visible('[data-testid="incident-card-mobile"]')
 

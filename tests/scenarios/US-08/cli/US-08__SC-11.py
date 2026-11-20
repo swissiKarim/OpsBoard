@@ -1,6 +1,6 @@
 # scenario-id: US-08/SC-11
 # AC-9: Interactive elements have visible focus ring CSS rules
-# exit_code=0 means found → passes.
+# then={exit_code equals 0} means found → passes
 import subprocess
 import sys
 import json
@@ -12,11 +12,12 @@ result = subprocess.run(
 )
 
 found = result.returncode == 0
-matches = result.stdout.strip().splitlines()
+exit_code = 0 if found else 1
 
 print(json.dumps({
+    "exit_code": exit_code,
     "found": found,
-    "matches": matches[:5],
+    "matches": result.stdout.strip().splitlines()[:5],
 }))
 
-sys.exit(0 if found else 1)
+sys.exit(exit_code)
