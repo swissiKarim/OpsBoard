@@ -1,37 +1,32 @@
 #!/usr/bin/env bash
 # scenario-id: US-08/SC-12
 # AC-10: Templates use semantic HTML elements throughout
-# PO then={exit_code equals 0} → semantic elements found → exit 0
+# PO then={exit_code equals 0}
 
 TEMPLATES_DIR="templates"
 
 if [ ! -d "$TEMPLATES_DIR" ]; then
-  echo "Templates directory not found" >&2
+  printf '{"found":false,"error":"Templates directory not found"}\n'
   exit 2
 fi
 
 ERRORS=0
+FOUND=""
 
-check_element() {
-  local element="$1"
+for element in nav main header section button; do
   if grep -rq "<${element}" "$TEMPLATES_DIR"; then
-    echo "OK: <${element}> found"
+    FOUND="${FOUND}${element},"
   else
-    echo "ERROR: <${element}> NOT found in templates" >&2
     ERRORS=$((ERRORS + 1))
   fi
-}
+done
 
-check_element "nav"
-check_element "main"
-check_element "header"
-check_element "section"
-check_element "button"
+FOUND="${FOUND%,}"
 
 if [ $ERRORS -eq 0 ]; then
-  echo "OK: All required semantic HTML elements present"
+  printf '{"found":true,"elements":"%s"}\n' "$FOUND"
   exit 0
 else
-  echo "ERROR: $ERRORS semantic HTML element(s) missing" >&2
+  printf '{"found":false,"elements":"%s","missing_count":%d}\n' "$FOUND" "$ERRORS"
   exit 1
 fi

@@ -2,33 +2,26 @@
 # scenario-id: US-08/SC-7
 # AC-5: CSS uses only variables for color definitions (no hardcoded hex values)
 # PO then={exit_code equals 1}
-# Convention: grep exits 1 when NO match is found.
-# This script greps for hardcoded hex colour literals in CSS rule bodies
-# (excluding lines that are CSS variable definitions: "  --foo: #...").
-# When CSS is clean (no hardcoded hex in rules), grep exits 1 → PO passes.
+# grep exits 1 when NO match found → CSS is clean → script exits 1 (PO passes)
 
 CSS_FILE="static/css/main.css"
 
 if [ ! -f "$CSS_FILE" ]; then
-  echo "CSS file not found: $CSS_FILE" >&2
+  printf '{"error":"CSS file not found"}\n'
   exit 2
 fi
 
-# Strip lines that are variable definitions (start with optional whitespace then --)
-# Then grep for hex colour literals (#xxx or #xxxxxx) in the remaining lines.
-# grep exits 0 if found (violation), 1 if not found (clean).
-grep -E '#[0-9a-fA-F]{3,8}' "$CSS_FILE" \
-  | grep -Ev '^\s*--[a-zA-Z]' \
-  | grep -qE '#[0-9a-fA-F]{3,8}'
+# Find non-variable-definition lines that contain hex colour literals.
+# Variable definition lines start with optional whitespace then "--".
+# If any such lines exist, CSS has hardcoded hex in rules (violation).
+VIOLATIONS=$(grep -E '#[0-9a-fA-F]{3,8}' "$CSS_FILE" | grep -Ev '^\s*--[a-zA-Z]' || true)
 
-# If grep -q above exits 0 → violations found → we exit 0 (unexpected, PO would fail)
-# If grep -q above exits 1 → no violations → we exit 1 (PO expects 1 → pass)
-# Invert: exit with opposite of grep result
-STATUS=$?
-if [ $STATUS -eq 0 ]; then
-  echo "ERROR: Hardcoded hex values found in CSS rule bodies" >&2
-  grep -E '#[0-9a-fA-F]{3,8}' "$CSS_FILE" | grep -Ev '^\s*--[a-zA-Z]' >&2
-  exit 0
-else
+if [ -z "$VIOLATIONS" ]; then
+  # No violations — CSS is clean
+  printf '{"violations":0,"clean":true}\n'
   exit 1
+else
+  COUNT=$(echo "$VIOLATIONS" | wc -l | tr -d ' ')
+  printf '{"violations":%s,"clean":false}\n' "$COUNT"
+  exit 0
 fi
