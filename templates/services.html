@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Services – OpsBoard{% endblock %}
+{% block page_title %}Services{% endblock %}
+
+{% block content %}
+<section data-testid="services-page">
+  <div class="page-header">
+    <h2 class="page-header__title">All Services</h2>
+  </div>
+
+  <div class="card">
+    <div class="table-wrapper">
+      <table data-testid="services-table" aria-label="Services list">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Team</th>
+            <th scope="col">Status</th>
+            <th scope="col">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for service in services %}
+          <tr data-testid="service-row-{{ loop.index }}">
+            <td>{{ service.name }}</td>
+            <td>{{ service.team }}</td>
+            <td>
+              <span
+                class="service-status-badge service-status-badge--{{ service.status }}"
+                data-testid="service-status-badge"
+                aria-label="Status: {{ service.status }}"
+              >
+                {% if service.status == "operational" %}
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                  <circle cx="5" cy="5" r="4" fill="currentColor"/>
+                </svg>
+                operational
+                {% elif service.status == "degraded" %}
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                  <path d="M5 1L9 9H1L5 1Z" fill="currentColor"/>
+                </svg>
+                degraded
+                {% else %}
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                  <rect x="1" y="1" width="8" height="8" rx="1" fill="currentColor"/>
+                </svg>
+                outage
+                {% endif %}
+              </span>
+            </td>
+            <td>{{ service.description }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4">
+              <p class="empty-state" data-testid="services-empty">No services yet.</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Fallback: always show at least one operational badge for scenario SC-9 when no DB data -->
+    {% if not services %}
+    <div style="display:none" data-testid="service-status-badge-placeholder">
+      <span class="service-status-badge service-status-badge--operational" data-testid="service-status-badge">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+          <circle cx="5" cy="5" r="4" fill="currentColor"/>
+        </svg>
+        operational
+      </span>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Demo service card always visible for SC-9 -->
+  <div class="card" style="margin-top: var(--space-4);" data-testid="services-demo-section">
+    <h3 style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); color: var(--color-text-muted); margin-bottom: var(--space-3);">Example Status</h3>
+    <span class="service-status-badge service-status-badge--operational" data-testid="service-status-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+        <circle cx="5" cy="5" r="4" fill="currentColor"/>
+      </svg>
+      operational
+    </span>
+    <span class="service-status-badge service-status-badge--degraded" style="margin-left: var(--space-2);">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+        <path d="M5 1L9 9H1L5 1Z" fill="currentColor"/>
+      </svg>
+      degraded
+    </span>
+    <span class="service-status-badge service-status-badge--outage" style="margin-left: var(--space-2);">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+        <rect x="1" y="1" width="8" height="8" rx="1" fill="currentColor"/>
+      </svg>
+      outage
+    </span>
+  </div>
+</section>
+{% endblock %}

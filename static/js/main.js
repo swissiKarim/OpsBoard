@@ -1,18 +1,13 @@
 /* OpsBoard – main.js */
 
 /* ── Theme ────────────────────────────────────────────────── */
-(function () {
-  const stored = localStorage.getItem("opsboard-theme");
-  if (stored === "dark" || stored === "light") {
-    document.documentElement.setAttribute("data-theme", stored);
-  }
-})();
+/* Note: initial theme is applied in <head> of base.html to avoid FOUC */
 
 function toggleTheme() {
-  const root = document.documentElement;
-  const current = root.getAttribute("data-theme");
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  let next;
+  var root = document.documentElement;
+  var current = root.getAttribute("data-theme");
+  var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  var next;
   if (current === "dark") {
     next = "light";
   } else if (current === "light") {
@@ -26,26 +21,49 @@ function toggleTheme() {
 
 /* ── Sidebar ──────────────────────────────────────────────── */
 function toggleSidebar() {
-  const sidebar = document.querySelector(".sidebar");
+  var sidebar = document.getElementById("main-sidebar");
+  var overlay = document.getElementById("sidebar-overlay");
   if (!sidebar) return;
-  const isWide = window.innerWidth >= 1024;
+  var isWide = window.innerWidth >= 1024;
   if (isWide) {
     sidebar.classList.toggle("collapsed");
+    var wrapper = document.getElementById("main-wrapper");
+    if (wrapper) {
+      if (sidebar.classList.contains("collapsed")) {
+        wrapper.style.marginLeft = "var(--sidebar-collapsed-width)";
+      } else {
+        wrapper.style.marginLeft = "var(--sidebar-width)";
+      }
+    }
   } else {
-    sidebar.classList.toggle("mobile-open");
+    var isOpen = sidebar.classList.toggle("mobile-open");
+    if (overlay) {
+      if (isOpen) {
+        overlay.classList.add("active");
+      } else {
+        overlay.classList.remove("active");
+      }
+    }
   }
+}
+
+function closeMobileSidebar() {
+  var sidebar = document.getElementById("main-sidebar");
+  var overlay = document.getElementById("sidebar-overlay");
+  if (sidebar) sidebar.classList.remove("mobile-open");
+  if (overlay) overlay.classList.remove("active");
 }
 
 /* Mark active nav link */
 (function () {
-  const links = document.querySelectorAll(".sidebar__link");
+  var links = document.querySelectorAll(".sidebar__link");
   links.forEach(function (link) {
     if (link.getAttribute("href") === window.location.pathname) {
       link.classList.add("active");
       link.setAttribute("aria-current", "page");
     }
   });
-})();
+}());
 
 /* ── Toast ────────────────────────────────────────────────── */
 function showToast(message, duration) {
@@ -73,7 +91,6 @@ function openDialog(id) {
   if (!dialog) return;
   dialog.setAttribute("open", "");
   dialog.setAttribute("aria-modal", "true");
-  // Trap focus
   var focusable = dialog.querySelectorAll(
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
   );

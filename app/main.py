@@ -30,3 +30,33 @@ def health():
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
+
+
+@app.get("/services", response_class=HTMLResponse)
+def services(request: Request):
+    # Demo services for UI scenarios until a full DB layer is wired
+    demo_services = [
+        {"name": "API Gateway", "team": "Platform", "status": "operational",
+         "description": "Main API gateway for all external traffic"},
+        {"name": "Auth Service", "team": "Security", "status": "operational",
+         "description": "Authentication and authorisation service"},
+        {"name": "Payment Service", "team": "Payments", "status": "degraded",
+         "description": "Handles payment processing"},
+    ]
+    return templates.TemplateResponse(request, "services.html",
+                                      {"services": demo_services})
+
+
+@app.get("/incidents", response_class=HTMLResponse)
+def incidents(request: Request):
+    # Demo incidents for UI scenarios until a full DB layer is wired
+    demo_incidents = [
+        {"title": "API Gateway latency spike", "service": "API Gateway",
+         "severity": "SEV2", "status": "investigating",
+         "updated_at": "2024-01-15 10:30"},
+        {"title": "Payment timeouts", "service": "Payment Service",
+         "severity": "SEV1", "status": "open",
+         "updated_at": "2024-01-15 09:00"},
+    ]
+    return templates.TemplateResponse(request, "incidents.html",
+                                      {"incidents": demo_incidents})

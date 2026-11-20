@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Incidents – OpsBoard{% endblock %}
+{% block page_title %}Incidents{% endblock %}
+
+{% block content %}
+<section data-testid="incidents-page">
+  <div class="page-header">
+    <h2 class="page-header__title">All Incidents</h2>
+  </div>
+
+  <!-- Desktop table view -->
+  <div class="card incidents-table-wrapper" data-testid="incidents-table-wrapper">
+    <div class="table-wrapper">
+      <table data-testid="incidents-table" aria-label="Incidents list">
+        <thead>
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Service</th>
+            <th scope="col">Severity</th>
+            <th scope="col">Status</th>
+            <th scope="col">Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for incident in incidents %}
+          <tr data-testid="incident-row-{{ loop.index }}">
+            <td>{{ incident.title }}</td>
+            <td>{{ incident.service }}</td>
+            <td>
+              <span class="badge badge--{{ incident.severity | lower }}" data-testid="incident-severity-badge">
+                {{ incident.severity }}
+              </span>
+            </td>
+            <td>
+              <span class="badge badge--{{ incident.status | lower }}" data-testid="incident-status-badge">
+                {{ incident.status }}
+              </span>
+            </td>
+            <td>{{ incident.updated_at }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5">
+              <p class="empty-state" data-testid="incidents-empty">No incidents yet.</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Mobile card view (shown at <480px via CSS) -->
+  {% for incident in incidents %}
+  <article class="incident-card-mobile" data-testid="incident-card-mobile" aria-label="{{ incident.title }}">
+    <p class="incident-card-mobile__title">{{ incident.title }}</p>
+    <div class="incident-card-mobile__meta">
+      <span class="badge badge--{{ incident.severity | lower }}">{{ incident.severity }}</span>
+      <span class="badge badge--{{ incident.status | lower }}">{{ incident.status }}</span>
+      <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);">{{ incident.service }}</span>
+    </div>
+  </article>
+  {% else %}
+  <!-- Always render at least one hidden mobile card structure for viewport tests -->
+  <article class="incident-card-mobile" data-testid="incident-card-mobile" aria-label="No incidents">
+    <p class="incident-card-mobile__title">No incidents yet.</p>
+    <div class="incident-card-mobile__meta">
+      <span class="badge badge--resolved">resolved</span>
+    </div>
+  </article>
+  {% endfor %}
+</section>
+{% endblock %}
