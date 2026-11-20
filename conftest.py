@@ -13,14 +13,13 @@ def pytest_configure(config):
         req = Path(__file__).parent / "requirements.txt"
         if not req.exists():
             return
-        # Try system-wide first (CI often runs as root)
-        r = subprocess.run(
-            [sys.executable, "-m", "pip", "install", "-q", "-r", str(req)],
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "-q",
+             "-r", str(req), "--break-system-packages"],
+            check=True,
         )
-        if r.returncode != 0:
-            # Fallback: user install with PEP-668 override
-            subprocess.run(
-                [sys.executable, "-m", "pip", "install", "-q",
-                 "-r", str(req), "--break-system-packages"],
-                check=True,
-            )
+        # Ensure user site-packages is on sys.path for the current process
+        import site
+        user_site = site.getusersitepackages()
+        if user_site not in sys.path:
+            sys.path.insert(0, user_site)
