@@ -11,7 +11,8 @@ components:
   - ruff check .
   - pytest
   - pip install -q -r requirements.txt --break-system-packages
-  - pytest -v --tb=short --junitxml=.agentsphere/reports/junit.xml
+  - python -m ruff check .
+  - python -m pytest -v --tb=short --junitxml=.agentsphere/reports/junit.xml
   artifacts_ignore:
   - '*.db'
   - .pytest_cache/
@@ -24,8 +25,8 @@ components:
       command: pytest
       source: platform_default
 definition_of_done:
-- ruff check . und pytest laufen ohne Fehler
-- GET /health antwortet auf Port 8000 (Dienst web)
+- ruff check and pytest run without errors
+- GET /health responds on port 8000 (service web)
 network:
   needs: []
 services:
