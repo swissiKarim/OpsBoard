@@ -1,5 +1,6 @@
 schemaVersion: 4
-rationale: 'greenfield: derived from requirement (deterministic)'
+rationale: FastAPI + SQLAlchemy/SQLite scaffold with pytest; api scenario SC-1 needs
+  web service, ui scenario SC-7 needs preview
 components:
 - name: app
   path: .
@@ -9,7 +10,12 @@ components:
   verify:
   - ruff check .
   - pytest
-  artifacts_ignore: []
+  - pip install -q -r requirements.txt --break-system-packages
+  - pytest -v --tb=short --junitxml=.agentsphere/reports/junit.xml
+  artifacts_ignore:
+  - '*.db'
+  - .pytest_cache/
+  - .ruff_cache/
   verifySlots:
     lint:
       command: ruff check .
@@ -24,10 +30,10 @@ network:
   needs: []
 services:
 - name: web
-  start: uvicorn app.main:app --host 0.0.0.0 --port 8000
+  start: bash scripts/start-web.sh
   port: 8000
   health:
     http: /health
-    timeoutSec: 30
+    timeoutSec: 60
   preview:
     path: /

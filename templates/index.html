@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard – OpsBoard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="dashboard" data-testid="dashboard">
+  <div class="dashboard__stats" data-testid="dashboard-stats">
+    <div class="stat-card" data-testid="stat-open-incidents">
+      <span class="stat-card__label">Open Incidents</span>
+      <span class="stat-card__value">0</span>
+    </div>
+    <div class="stat-card" data-testid="stat-affected-services">
+      <span class="stat-card__label">Affected Services</span>
+      <span class="stat-card__value">0</span>
+    </div>
+    <div class="stat-card" data-testid="stat-avg-resolution">
+      <span class="stat-card__label">Avg. Resolution (30d)</span>
+      <span class="stat-card__value">—</span>
+    </div>
+  </div>
+
+  <div class="dashboard__chart" data-testid="dashboard-chart">
+    <h2 class="dashboard__section-title">Incidents per Day (last 14 days)</h2>
+    <svg class="bar-chart" data-testid="chart-incidents-per-day" viewBox="0 0 560 160" aria-label="Incidents per day bar chart">
+      <text x="0" y="150" font-size="12" fill="var(--color-text-muted)">No data yet</text>
+    </svg>
+  </div>
+
+  <div class="dashboard__recent" data-testid="dashboard-recent-incidents">
+    <h2 class="dashboard__section-title">Recently Changed Incidents</h2>
+    <p class="empty-state" data-testid="empty-recent-incidents">No incidents yet.</p>
+  </div>
+</section>
+{% endblock %}
