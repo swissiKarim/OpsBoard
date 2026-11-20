@@ -481,12 +481,6 @@ body.sidebar-collapsed .main-wrapper {
   .main-wrapper { margin-left: 0 !important; }
 }
 
-/* Incident cards on mobile (<= 480px) */
-@media (max-width: 480px) {
-  .incidents-table { display: none; }
-  .incident-cards  { display: block; }
-}
-
 /* ── Reduced motion ───────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -547,7 +541,14 @@ td {
 tr:hover td { background: var(--color-surface-alt); }
 
 /* ── Incident cards (mobile) ──────────────────────────────── */
+/* Default: hide cards, show table. At ≤480px: swap. */
 .incident-cards { display: none; }
+
+/* Show cards, hide table on narrow viewports */
+@media (max-width: 480px) {
+  .incidents-table { display: none; }
+  .incident-cards  { display: block; }
+}
 
 .incident-card {
   background: var(--color-surface);
