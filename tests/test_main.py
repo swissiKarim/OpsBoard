@@ -1,10 +1,11 @@
 """Placeholder tests for the project scaffold."""
-from fastapi.testclient import TestClient
-from app.main import app
 
 
 def test_health():
     """GET /health returns 200."""
+    from fastapi.testclient import TestClient
+    from app.main import app
+
     with TestClient(app) as client:
         response = client.get("/health")
     assert response.status_code == 200
@@ -13,6 +14,9 @@ def test_health():
 
 def test_index():
     """GET / returns 200 HTML."""
+    from fastapi.testclient import TestClient
+    from app.main import app
+
     with TestClient(app) as client:
         response = client.get("/")
     assert response.status_code == 200
@@ -21,6 +25,9 @@ def test_index():
 
 def test_index_contains_testids():
     """Base template must include key data-testid attributes."""
+    from fastapi.testclient import TestClient
+    from app.main import app
+
     with TestClient(app) as client:
         response = client.get("/")
     body = response.text
