@@ -4,18 +4,24 @@
 
 cd "$(dirname "$0")/../../../.." || exit 1
 
-# Ensure deps installed
-python3 -m pip install -q -r requirements.txt --break-system-packages >/dev/null 2>&1 || true
-
+# Use only built-in sqlite3 module — no external deps needed
 MODE=$(python3 - <<'EOF'
-import sys, os
-sys.path.insert(0, os.getcwd())
-from app.database import engine, init_db
-from sqlalchemy import text
-init_db()
-with engine.connect() as conn:
-    result = conn.execute(text("PRAGMA journal_mode")).fetchone()
-    print(result[0])
+import sqlite3, os, json
+
+db_path = "./opsboard_sc2_test.db"
+try:
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA journal_mode=WAL")
+    cur = conn.execute("PRAGMA journal_mode")
+    mode = cur.fetchone()[0]
+    conn.close()
+finally:
+    try:
+        os.remove(db_path)
+    except OSError:
+        pass
+
+print(mode)
 EOF
 )
 
