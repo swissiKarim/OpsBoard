@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}OpsBoard{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/main.css" />
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar navigation -->
+    <nav class="sidebar" data-testid="nav-sidebar" aria-label="Main navigation">
+      <div class="sidebar__logo">
+        <span class="sidebar__logo-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="28" height="28" rx="6" fill="var(--color-primary)"/>
+            <path d="M7 14h14M14 7v14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="sidebar__logo-text">OpsBoard</span>
+      </div>
+
+      <ul class="sidebar__nav" role="list">
+        <li>
+          <a href="/" class="sidebar__link" data-testid="nav-dashboard" aria-label="Dashboard">
+            <span class="sidebar__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor"/>
+                <rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor"/>
+                <rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor"/>
+                <rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="sidebar__label">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="/services" class="sidebar__link" data-testid="nav-services" aria-label="Services">
+            <span class="sidebar__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="2"/>
+                <circle cx="10" cy="10" r="3" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="sidebar__label">Services</span>
+          </a>
+        </li>
+        <li>
+          <a href="/incidents" class="sidebar__link" data-testid="nav-incidents" aria-label="Incidents">
+            <span class="sidebar__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 3L18 17H2L10 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M10 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="10" cy="14.5" r="0.75" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="sidebar__label">Incidents</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar__footer">
+        <button
+          class="sidebar__collapse-btn"
+          data-testid="nav-sidebar-toggle"
+          aria-label="Toggle sidebar"
+          onclick="toggleSidebar()"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M13 5L7 10l6 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="main-wrapper">
+      <!-- Header -->
+      <header class="header" data-testid="app-header">
+        <div class="header__left">
+          <button
+            class="header__menu-btn"
+            data-testid="header-menu-btn"
+            aria-label="Open navigation"
+            onclick="toggleSidebar()"
+          >
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <h1 class="header__title" data-testid="header-title">{% block page_title %}OpsBoard{% endblock %}</h1>
+        </div>
+        <div class="header__right">
+          <!-- Global search -->
+          <div class="header__search-wrapper">
+            <label for="header-search-input" class="sr-only">Global search</label>
+            <input
+              id="header-search-input"
+              type="search"
+              class="header__search"
+              data-testid="header-search"
+              placeholder="Search…"
+              aria-label="Global search"
+            />
+          </div>
+          <!-- Dark mode toggle -->
+          <button
+            class="header__theme-btn"
+            data-testid="header-theme-toggle"
+            aria-label="Toggle dark mode"
+            onclick="toggleTheme()"
+          >
+            <svg class="icon-sun" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <svg class="icon-moon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M17 10.5A7 7 0 1 1 9.5 3a5.5 5.5 0 0 0 7.5 7.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Page content -->
+      <main class="content" data-testid="main-content">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
