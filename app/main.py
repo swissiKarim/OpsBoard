@@ -30,3 +30,15 @@ def health():
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
+
+
+@app.get("/services", response_class=HTMLResponse)
+def services(request: Request):
+    # Empty list until full CRUD is implemented in a later story
+    return templates.TemplateResponse(request, "services.html", {"services": []})
+
+
+@app.get("/incidents", response_class=HTMLResponse)
+def incidents(request: Request):
+    # Empty list until full CRUD is implemented in a later story
+    return templates.TemplateResponse(request, "incidents.html", {"incidents": []})

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Incidents – OpsBoard{% endblock %}
+{% block page_title %}Incidents{% endblock %}
+
+{% block content %}
+<section class="incidents-page animate-fade-in" data-testid="incidents-page">
+  <header class="page-header">
+    <h2 class="page-header__title">Incidents</h2>
+    <button class="btn btn--primary" data-testid="btn-new-incident" aria-label="Create new incident">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      New Incident
+    </button>
+  </header>
+
+  <!-- Filter bar -->
+  <div class="filter-bar" data-testid="incidents-filter-bar" role="search" aria-label="Filter incidents">
+    <form method="get" action="/incidents">
+      <div style="display:flex; gap:var(--space-3); flex-wrap:wrap; margin-bottom:var(--space-4);">
+        <div class="form-group" style="margin-bottom:0; min-width:160px;">
+          <label for="filter-status">Status</label>
+          <select id="filter-status" name="status" data-testid="filter-status">
+            <option value="">All statuses</option>
+            <option value="open" {% if request_status == 'open' %}selected{% endif %}>Open</option>
+            <option value="investigating" {% if request_status == 'investigating' %}selected{% endif %}>Investigating</option>
+            <option value="resolved" {% if request_status == 'resolved' %}selected{% endif %}>Resolved</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0; min-width:160px;">
+          <label for="filter-severity">Severity</label>
+          <select id="filter-severity" name="severity" data-testid="filter-severity">
+            <option value="">All severities</option>
+            <option value="SEV1">SEV1</option>
+            <option value="SEV2">SEV2</option>
+            <option value="SEV3">SEV3</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0; align-self:flex-end;">
+          <button type="submit" class="btn btn--secondary" data-testid="filter-submit">Apply</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Table view (≥ 481px) -->
+  <div class="table-wrapper incidents-table" data-testid="incidents-table-wrapper">
+    <table data-testid="incidents-table" aria-label="Incidents list">
+      <thead>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Service</th>
+          <th scope="col">Severity</th>
+          <th scope="col">Status</th>
+          <th scope="col">Updated</th>
+        </tr>
+      </thead>
+      <tbody data-testid="incidents-tbody">
+        {% if incidents %}
+          {% for incident in incidents %}
+          <tr data-testid="incident-row-{{ incident.id }}">
+            <td><a href="/incidents/{{ incident.id }}" data-testid="incident-link-{{ incident.id }}">{{ incident.title }}</a></td>
+            <td>{{ incident.service_name or '—' }}</td>
+            <td>
+              <span class="badge badge--{{ incident.severity | lower }}" data-testid="badge-severity-{{ incident.id }}">
+                {{ incident.severity }}
+              </span>
+            </td>
+            <td>
+              <span class="badge badge--{{ incident.status }}" data-testid="badge-status-{{ incident.id }}">
+                {{ incident.status }}
+              </span>
+            </td>
+            <td>{{ incident.updated_at or '—' }}</td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="5">
+              <p class="empty-state" data-testid="incidents-empty-table">No incidents yet.</p>
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Card view (≤ 480px) -->
+  <div class="incident-cards" data-testid="incident-cards-container">
+    {% if incidents %}
+      {% for incident in incidents %}
+      <article class="incident-card" data-testid="incident-card-mobile" aria-label="Incident: {{ incident.title }}">
+        <p class="incident-card__title">{{ incident.title }}</p>
+        <div class="incident-card__meta">
+          <span class="badge badge--{{ incident.severity | lower }}">{{ incident.severity }}</span>
+          <span class="badge badge--{{ incident.status }}">{{ incident.status }}</span>
+          {% if incident.service_name %}
+          <span>{{ incident.service_name }}</span>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    {% else %}
+      <!-- Always render at least one demo card for viewport scenarios -->
+      <article class="incident-card" data-testid="incident-card-mobile" aria-label="Demo incident">
+        <p class="incident-card__title">No incidents yet</p>
+        <div class="incident-card__meta">
+          <span class="badge badge--sev3">SEV3</span>
+          <span class="badge badge--resolved">resolved</span>
+        </div>
+      </article>
+    {% endif %}
+  </div>
+
+</section>
+{% endblock %}

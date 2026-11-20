@@ -25,6 +25,15 @@ function toggleTheme() {
 }
 
 /* ── Sidebar ──────────────────────────────────────────────── */
+(function () {
+  // On mobile widths, open sidebar by default so it can be toggled closed.
+  const sidebar = document.querySelector(".sidebar");
+  if (!sidebar) return;
+  if (window.innerWidth < 1024) {
+    sidebar.classList.add("mobile-open");
+  }
+})();
+
 function toggleSidebar() {
   const sidebar = document.querySelector(".sidebar");
   if (!sidebar) return;
