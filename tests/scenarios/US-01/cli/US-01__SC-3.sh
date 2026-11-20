@@ -4,7 +4,7 @@
 
 cd "$(dirname "$0")/../../../.." || exit 1
 
-pytest -q --tb=short 2>&1
+python3 -m pytest -q --tb=short 2>&1
 EXIT=$?
 
 python3 -c "import json; print(json.dumps({'exit_code': $EXIT}))"
