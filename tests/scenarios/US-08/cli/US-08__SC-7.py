@@ -1,7 +1,8 @@
 # scenario-id: US-08/SC-7
 # AC-5: CSS uses only variables for color definitions (no hardcoded hex values)
 # PO then={exit_code equals 1}
-# Convention: exit 1 = no violations found (CSS is clean)
+# Platform evaluates then against JSON stdout field "exit_code"
+# exit_code=1 means "grep found no violations" (clean CSS)
 import json
 import re
 import sys
@@ -12,7 +13,7 @@ try:
     with open(CSS_FILE) as f:
         css = f.read()
 except FileNotFoundError:
-    print(json.dumps({"error": "CSS file not found", "violations": -1}))
+    print(json.dumps({"exit_code": 2, "error": "CSS file not found"}))
     sys.exit(2)
 
 violations = []
@@ -25,11 +26,11 @@ for line in css.splitlines():
     if re.search(r'#[0-9a-fA-F]{3,8}\b', stripped):
         violations.append(stripped)
 
-print(json.dumps({"violations": len(violations), "clean": len(violations) == 0}))
-
 if len(violations) == 0:
-    # CSS is clean — exit 1 as PO expects
+    # CSS is clean — exit_code=1 as PO expects (grep convention: no match = exit 1)
+    print(json.dumps({"exit_code": 1, "violations": 0, "clean": True}))
     sys.exit(1)
 else:
-    # Violations found — exit 0 (unexpected)
+    # Violations found
+    print(json.dumps({"exit_code": 0, "violations": len(violations), "clean": False}))
     sys.exit(0)
