@@ -21,6 +21,13 @@ app = FastAPI(title="OpsBoard", version="0.1.0", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# API routers
+from app.routers import incidents as incidents_router  # noqa: E402
+from app.routers import services as services_router  # noqa: E402
+
+app.include_router(services_router.router)
+app.include_router(incidents_router.router)
+
 
 @app.get("/health")
 def health():

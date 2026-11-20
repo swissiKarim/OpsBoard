@@ -1,6 +1,6 @@
 schemaVersion: 4
-rationale: FastAPI + SQLAlchemy/SQLite scaffold with pytest; api scenario SC-1 needs
-  web service, ui scenario SC-7 needs preview
+rationale: FastAPI + SQLAlchemy/SQLite with StatusCalculator, IncidentService, timeline;
+  api scenarios SC-1..SC-8 need web service; SC-9 is cli; preview for ui
 components:
 - name: app
   path: .
