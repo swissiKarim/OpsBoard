@@ -118,7 +118,7 @@ def test_css_no_hardcoded_hex_in_rules():
         if re.search(r'#[0-9a-fA-F]{3,8}\b', stripped):
             if not stripped.startswith("--"):
                 violations.append(line)
-    assert violations == [], f"Hardcoded hex found in CSS rules:\n" + "\n".join(violations)
+    assert violations == [], "Hardcoded hex found in CSS rules:\n" + "\n".join(violations)
 
 
 def test_base_has_inline_theme_script():
